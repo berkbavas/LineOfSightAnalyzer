@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Resources/Shaders/Terrain.frag</file>
+        <file>Resources/Shaders/Terrain.vert</file>
+        <file>Resources/HeightMaps/00.png</file>
+        <file>Resources/HeightMaps/01.png</file>
+        <file>Resources/HeightMaps/02.png</file>
+    </qresource>
+</RCC>
