@@ -1,4 +1,4 @@
-# Line Of Sight Analyzer
+# Line of Sight Analyzer
 This line of sight analyzer is implemented without using ray casting techniques.
 Instead I used omnidirectional shadow mapping idea in order to generate line of sight (LOS) map.
 The application runs at 144 FPS (V-Sync enabled) on my PC.
