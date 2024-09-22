@@ -11,11 +11,9 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-set(INCLUDE_DIR Dependencies/qtimgui/include/qtimgui
-                Dependencies/qtimgui/include/imgui
-                Dependencies/qtimgui/include/implot)
+set(INCLUDE_DIR libs/qtimgui/include)
                 
-set(LIBS_DIR Dependencies/qtimgui/lib)
+set(LIBS_DIR libs/qtimgui/lib)
 
 set(LIBS imgui implot qt_imgui_widgets)
 
@@ -23,7 +21,7 @@ find_package(Qt5 COMPONENTS Core Widgets OpenGL Gui REQUIRED)
 
 add_compile_options(/bigobj)
 
-file(GLOB SOURCES Sources/*.cpp Sources/*.h LineOfSightAnalyzer.qrc)
+file(GLOB SOURCES src/*.cpp src/*.h LineOfSightAnalyzer.qrc)
 
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}" ${INCLUDE_DIR})
 
@@ -35,14 +33,14 @@ target_link_libraries(LineOfSightAnalyzer Qt5::Core Qt5::Widgets Qt5::OpenGL ${L
 
 add_custom_command(TARGET LineOfSightAnalyzer
     POST_BUILD COMMAND xcopy /E /Y 
-    "\"$(SolutionDir)../Resources\""
-    "\"$(OutDir)Resources/*\""
+    "\"$(SolutionDir)../resources\""
+    "\"$(OutDir)resources/*\""
 )
 
 add_custom_command(TARGET LineOfSightAnalyzer 
     POST_BUILD COMMAND xcopy /E /Y 
-    "\"$(SolutionDir)../Resources\""
-    "\"$(BuildDir)Resources/*\""
+    "\"$(SolutionDir)../resources\""
+    "\"$(BuildDir)resources/*\""
 )
 
 add_custom_command(TARGET LineOfSightAnalyzer 

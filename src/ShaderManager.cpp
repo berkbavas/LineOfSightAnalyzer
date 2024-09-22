@@ -18,8 +18,8 @@ bool LineOfSightAnalyzer::ShaderManager::Init()
         Shader* shader = new Shader(ShaderType::TerrainShader);
         mShaders.insert(shader->GetType(), shader);
 
-        shader->AddPath(QOpenGLShader::Vertex, ":/Resources/Shaders/Terrain.vert");
-        shader->AddPath(QOpenGLShader::Fragment, ":/Resources/Shaders/Terrain.frag");
+        shader->AddPath(QOpenGLShader::Vertex, ":/resources/Shaders/Terrain.vert");
+        shader->AddPath(QOpenGLShader::Fragment, ":/resources/Shaders/Terrain.frag");
 
         if (!shader->Init())
             return false;
@@ -30,9 +30,9 @@ bool LineOfSightAnalyzer::ShaderManager::Init()
         Shader* shader = new Shader(ShaderType::ObserverShader);
         mShaders.insert(shader->GetType(), shader);
 
-        shader->AddPath(QOpenGLShader::Vertex, ":/Resources/Shaders/Observer.vert");
-        shader->AddPath(QOpenGLShader::Geometry, ":/Resources/Shaders/Observer.geom");
-        shader->AddPath(QOpenGLShader::Fragment, ":/Resources/Shaders/Observer.frag");
+        shader->AddPath(QOpenGLShader::Vertex, ":/resources/Shaders/Observer.vert");
+        shader->AddPath(QOpenGLShader::Geometry, ":/resources/Shaders/Observer.geom");
+        shader->AddPath(QOpenGLShader::Fragment, ":/resources/Shaders/Observer.frag");
 
         if (!shader->Init())
             return false;
@@ -43,8 +43,8 @@ bool LineOfSightAnalyzer::ShaderManager::Init()
         Shader* shader = new Shader(ShaderType::DebugShader);
         mShaders.insert(shader->GetType(), shader);
 
-        shader->AddPath(QOpenGLShader::Vertex, ":/Resources/Shaders/Debug.vert");
-        shader->AddPath(QOpenGLShader::Fragment, ":/Resources/Shaders/Debug.frag");
+        shader->AddPath(QOpenGLShader::Vertex, ":/resources/Shaders/Debug.vert");
+        shader->AddPath(QOpenGLShader::Fragment, ":/resources/Shaders/Debug.frag");
 
         if (!shader->Init())
             return false;

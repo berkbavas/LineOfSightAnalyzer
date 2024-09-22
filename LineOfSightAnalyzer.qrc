@@ -1,14 +1,14 @@
 <RCC>
     <qresource prefix="/">
-        <file>Resources/Shaders/Terrain.frag</file>
-        <file>Resources/Shaders/Terrain.vert</file>
-        <file>Resources/HeightMaps/00.png</file>
-        <file>Resources/HeightMaps/01.png</file>
-        <file>Resources/HeightMaps/02.png</file>
-        <file>Resources/Shaders/Observer.vert</file>
-        <file>Resources/Shaders/Observer.geom</file>
-        <file>Resources/Shaders/Observer.frag</file>
-        <file>Resources/Shaders/Debug.frag</file>
-        <file>Resources/Shaders/Debug.vert</file>
+        <file>resources/Shaders/Terrain.frag</file>
+        <file>resources/Shaders/Terrain.vert</file>
+        <file>resources/HeightMaps/00.png</file>
+        <file>resources/HeightMaps/01.png</file>
+        <file>resources/HeightMaps/02.png</file>
+        <file>resources/Shaders/Observer.vert</file>
+        <file>resources/Shaders/Observer.geom</file>
+        <file>resources/Shaders/Observer.frag</file>
+        <file>resources/Shaders/Debug.frag</file>
+        <file>resources/Shaders/Debug.vert</file>
     </qresource>
 </RCC>

@@ -49,7 +49,7 @@ void LineOfSightAnalyzer::Controller::Init()
     initializeOpenGLFunctions();
     glEnable(GL_DEPTH_TEST);
 
-    QString path = ":/Resources/HeightMaps/00.png";
+    QString path = ":/resources/HeightMaps/00.png";
     QImage image(path);
 
     if (image.isNull())

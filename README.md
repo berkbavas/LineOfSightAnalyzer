@@ -14,9 +14,3 @@ The application runs at 144 FPS (V-Sync enabled) on my PC.
 8) Run CMake `cmake ..`.
 9) Open `LineOfSightAnalyzer.sln` with `Visual Studio 2022`.
 10) Build & Run with `Release` config.
-
-## Screenshots
-
-![image](https://user-images.githubusercontent.com/53399385/201484129-67f08fa8-5f10-4456-af9e-e9180bfe404d.png)
-
-![image](https://user-images.githubusercontent.com/53399385/201484169-9099b497-c876-4145-8332-6c7a50e5621d.png)
