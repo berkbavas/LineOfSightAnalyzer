@@ -1,0 +1,7 @@
+#pragma once
+
+#define INITIAL_WIDTH  1600
+#define INITIAL_HEIGHT 900
+
+#define OBSERVER_FBO_WIDTH  1024
+#define OBSERVER_FBO_HEIGHT 1024
