@@ -55,9 +55,10 @@ void LineOfSightAnalyzer::Controller::Render(float ifps)
     mWidth = mWindow->width() * mDevicePixelRatio;
     mHeight = mWindow->height() * mDevicePixelRatio;
 
-    mCameraManager->Update(ifps);
     mCameraManager->SetDevicePixelRatio(mDevicePixelRatio);
+    mCameraManager->Update(ifps);
 
+    mRenderer->SetDevicePixelRatio(mDevicePixelRatio);
     mRenderer->Render(ifps);
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -68,8 +69,6 @@ void LineOfSightAnalyzer::Controller::Render(float ifps)
     ImGui::Begin("Settings");
     mRenderer->DrawGui();
     mCameraManager->DrawGui();
-    ImGui::End();
-
     ImGui::End();
 
     ImGui::Render();
