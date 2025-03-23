@@ -28,9 +28,10 @@ void LineOfSightAnalyzer::TerrainRenderer::Init()
     texture.name = "heightMap";
     texture.unit = 0;
 
-    mTerrain = new Terrain(texture.width, texture.height, 32);
+    mTerrain = new Terrain(texture.width, texture.height, 16);
     mTerrain->SetTexture(texture);
     mTerrain->Construct();
+
 }
 
 void LineOfSightAnalyzer::TerrainRenderer::Render(float)

@@ -83,6 +83,7 @@ void LineOfSightAnalyzer::Controller::OnKeyPressed(QKeyEvent* event)
     }
 
     mCameraManager->OnKeyPressed(event);
+    mRenderer->OnKeyPressed(event);
 }
 
 void LineOfSightAnalyzer::Controller::OnKeyReleased(QKeyEvent* event)
@@ -125,7 +126,7 @@ void LineOfSightAnalyzer::Controller::OnMouseMoved(QMouseEvent* event)
     }
 
     mCameraManager->OnMouseMoved(event);
-    mRenderer->onMouseMoved(event);
+    mRenderer->OnMouseMoved(event);
 }
 
 void LineOfSightAnalyzer::Controller::OnWheelMoved(QWheelEvent* event)

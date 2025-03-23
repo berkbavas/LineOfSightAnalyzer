@@ -74,14 +74,16 @@ void LineOfSightAnalyzer::LineOfSightRenderer::Render(float ifps)
     // Update observers' position
     for (int i = 0; i < 6; i++)
     {
-        mObservers[i]->SetPosition(mTerrainRenderer->GetMouseWorldPosition() + QVector3D(0, mObserverHeight, 0));
+        if (!mLockObserverPosition)
+        {
+            mObservers[i]->SetPosition(mTerrainRenderer->GetMouseWorldPosition() + QVector3D(0, mObserverHeight, 0));
+        }
 
         mObservers[i]->SetZNear(mMinLosDistance);
         mObservers[i]->SetZFar(mMaxLosDistance);
     }
 
     // Line of sight render
-
     glBindFramebuffer(GL_FRAMEBUFFER, mFramebuffer);
     glViewport(0, 0, OBSERVER_FBO_WIDTH, OBSERVER_FBO_HEIGHT);
     glClearColor(0, 0, 0, 1);
@@ -106,4 +108,14 @@ void LineOfSightAnalyzer::LineOfSightRenderer::DrawGui()
 {
     ImGui::SliderFloat("Min LOS Distance", &mMinLosDistance, 0.1f, 100.f);
     ImGui::SliderFloat("Max LOS Distance", &mMaxLosDistance, mMinLosDistance, 1000.0f);
+}
+
+void LineOfSightAnalyzer::LineOfSightRenderer::SetTerrainRenderer(TerrainRenderer* terrainRenderer)
+{
+    mTerrainRenderer = terrainRenderer;
+}
+
+QVector3D LineOfSightAnalyzer::LineOfSightRenderer::GetObserverPosition() const
+{
+    return mObservers[0]->GetPosition();
 }

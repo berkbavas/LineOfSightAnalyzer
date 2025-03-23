@@ -13,11 +13,11 @@ set(CMAKE_AUTOUIC ON)
 
 set(INCLUDE_DIR Libs/qtimgui/include)    
 
-set(LIBS_DIR    Libs/qtimgui/lib)
+set(LIBS_DIR Libs/qtimgui/lib)
 
 set(LIBS   
     debug debug/imgui
-    debug   debug/qt_imgui_widgets  
+    debug debug/qt_imgui_widgets  
     optimized release/imgui
     optimized release/qt_imgui_widgets
 )

@@ -24,14 +24,13 @@ namespace LineOfSightAnalyzer
         void DrawGui();
         void Resize(int w, int h);
 
-        void onMouseMoved(QMouseEvent* event);
+        void OnMouseMoved(QMouseEvent* event);
+        void OnKeyPressed(QKeyEvent* event);
 
       private:
         TerrainRenderer* mTerrainRenderer;
         LineOfSightRenderer* mLineOfSightRenderer;
-
-        Camera* mActiveCamera;
-
+        
         DEFINE_MEMBER_PTR(CameraManager, CameraManager);
 
         DEFINE_MEMBER(float, DevicePixelRatio, 1.0f);

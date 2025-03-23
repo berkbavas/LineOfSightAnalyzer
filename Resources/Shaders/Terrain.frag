@@ -14,12 +14,12 @@ layout(location = 1) out vec3 out_FragWorldPosition;
 
 void main()
 {
-    // this is needed for fetching mouse world position
+    // This is needed for fetching mouse world position
     out_FragWorldPosition = fs_FragWorldPosition;
 
     vec4 color = texture(heightMap, fs_TextureCoords);
 
-    out_FragColor = vec4(color.xyz, 1.0f);
+    out_FragColor = color;
 
     vec3 fragmentToObserver = fs_FragWorldPosition - observerPosition;
     float closestDepth = texture(depthMap, fragmentToObserver).r * farPlane;

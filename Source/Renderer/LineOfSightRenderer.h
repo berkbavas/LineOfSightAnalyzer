@@ -19,7 +19,9 @@ namespace LineOfSightAnalyzer
         void Init();
         void Render(float ifps);
         void DrawGui();
-        void SetTerrainRenderer(TerrainRenderer* terrainRenderer) { mTerrainRenderer = terrainRenderer; }
+        void SetTerrainRenderer(TerrainRenderer* terrainRenderer);
+        
+        QVector3D GetObserverPosition() const;
 
       private:
         Shader* mObserverShader;
@@ -35,6 +37,8 @@ namespace LineOfSightAnalyzer
         GLuint mFramebuffer;
 
         float mObserverHeight{ 50 };
+
+        DEFINE_MEMBER(bool, LockObserverPosition, false);
     };
 
 }

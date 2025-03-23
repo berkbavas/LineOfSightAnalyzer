@@ -76,6 +76,7 @@ void LineOfSightAnalyzer::CameraManager::DrawGui()
     ImGui::Text("2   : Orthographic Camera");
     ImGui::Text(">   : Shift");
     ImGui::Text(">>> : Ctrl");
+    ImGui::Text("L   : Lock Observer");
 }
 
 void LineOfSightAnalyzer::CameraManager::Resize(int w, int h)
@@ -104,4 +105,9 @@ void LineOfSightAnalyzer::CameraManager::SetActiveCamera(Camera* camera)
 LineOfSightAnalyzer::Camera* LineOfSightAnalyzer::CameraManager::GetActiveCamera() const
 {
     return mActiveCamera;
+}
+
+LineOfSightAnalyzer::FreeCamera* LineOfSightAnalyzer::CameraManager::GetFreeCamera() const
+{
+    return mFreeCamera;
 }

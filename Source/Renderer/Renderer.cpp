@@ -32,13 +32,6 @@ void LineOfSightAnalyzer::Renderer::Initialize()
 
 void LineOfSightAnalyzer::Renderer::Render(float ifps)
 {
-    mActiveCamera = mCameraManager->GetActiveCamera();
-
-    // QOpenGLFramebufferObject::bindDefault();
-    // glViewport(0, 0, mActiveCamera->GetWidth(), mActiveCamera->GetHeight());
-    // glClearColor(0, 0, 0, 1);
-    // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
     mLineOfSightRenderer->Render(ifps);
 
     mTerrainRenderer->SetDevicePixelRatio(mDevicePixelRatio);
@@ -57,7 +50,15 @@ void LineOfSightAnalyzer::Renderer::Resize(int width, int height)
     mTerrainRenderer->Resize(width, height);
 }
 
-void LineOfSightAnalyzer::Renderer::onMouseMoved(QMouseEvent* event)
+void LineOfSightAnalyzer::Renderer::OnMouseMoved(QMouseEvent* event)
 {
     mTerrainRenderer->onMouseMoved(event);
+}
+
+void LineOfSightAnalyzer::Renderer::OnKeyPressed(QKeyEvent* event)
+{
+    if(event->key() == Qt::Key_L)
+    {
+        mLineOfSightRenderer->SetLockObserverPosition(!mLineOfSightRenderer->GetLockObserverPosition());
+    }
 }

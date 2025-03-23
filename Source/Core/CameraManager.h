@@ -27,6 +27,7 @@ namespace LineOfSightAnalyzer
 
         void SetActiveCamera(Camera* camera);
         Camera* GetActiveCamera() const;
+        FreeCamera* GetFreeCamera() const;
 
       private:
         Camera* mActiveCamera{ nullptr };
