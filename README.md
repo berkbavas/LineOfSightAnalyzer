@@ -16,31 +16,31 @@ This project avoids traditional ray casting, leveraging GPU-based techniques for
 1. Install the prerequisites above.
 2. Set the environment variable `Qt6_DIR` to your Qt installation, e.g.:
 
- ```
- set Qt6_DIR=C:\Qt\6.7.3\msvc2022_64
- ```
+    ```cmd
+    set Qt6_DIR=C:\Qt\6.7.3\msvc2022_64
+    ```
 
 3. Clone the repository:
 
- ```
- git clone https://github.com/berkbavas/LineOfSightAnalyzer.git
- ```
+    ```cmd
+    git clone https://github.com/berkbavas/LineOfSightAnalyzer.git
+    ```
 
 4. Create and enter a build directory:
 
- ```
- mkdir build
- cd build
- ```
+    ```cmd
+    mkdir build
+    cd build
+    ```
 
 5. Run CMake:
 
- ```
- cmake ..
- ```
+    ```cmd
+    cmake ..
+    ```
 
 6. Open `LineOfSightAnalyzer.sln` in Visual Studio 2022.
-7. Build and run the project in **Release** mode.
+7. Build and run the project.
 
 ## Demo
 

@@ -11,26 +11,24 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-set(INCLUDE_DIR Libs/qtimgui/include)    
-
-set(LIBS_DIR Libs/qtimgui/lib)
-
-set(LIBS   
-    debug debug/imgui
-    debug debug/qt_imgui_widgets  
-    optimized release/imgui
-    optimized release/qt_imgui_widgets
+set(LIBS_DIR        "${CMAKE_CURRENT_SOURCE_DIR}/Libs")
+set(QT_IMGUI_DIR    "${LIBS_DIR}/qtimgui")
+set(INCLUDE_DIR     "${QT_IMGUI_DIR}/include")
+set(LIBS_DIR        "${QT_IMGUI_DIR}/lib")
+set(LIBS
+    debug imguid                optimized imgui
+    debug qt_imgui_widgetsd     optimized qt_imgui_widgets
 )
 
 find_package(Qt6 COMPONENTS Core Widgets OpenGL Gui REQUIRED)
 
 file(GLOB_RECURSE SOURCES Source/*.cpp LineOfSightAnalyzer.qrc)
 
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/Source" ${INCLUDE_DIR})
-
-link_directories(${LIBS_DIR})
-
 add_executable(LineOfSightAnalyzer ${SOURCES})
+
+target_include_directories(LineOfSightAnalyzer PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/Source" ${INCLUDE_DIR})
+
+target_link_directories(LineOfSightAnalyzer PRIVATE ${LIBS_DIR})
 
 target_link_libraries(LineOfSightAnalyzer Qt6::Core Qt6::Widgets Qt6::OpenGL ${LIBS})
 
