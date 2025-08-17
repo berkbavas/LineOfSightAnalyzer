@@ -1,19 +1,51 @@
 # Line of Sight Analyzer
-This line of sight analyzer is implemented without using ray casting techniques.
-Instead I used omnidirectional shadow mapping idea in order to generate line of sight (LOS) map.
-The application runs at 144 FPS (V-Sync enabled) on my PC.
 
-## Build
-1) Install `CMake 3.25.1` or above.
-2) Install `Visual Studio 2022` and `MSVC C++ v143 Compiler`.
-3) Install `Qt 6.7.3 MSVC2022 64bit` kit.
-4) Set environment variable `Qt6_DIR` as `C:\Qt\6.7.3\msvc2022_64`.
-5) Clone the repo `git clone https://github.com/berkbavas/LineOfSightAnalyzer.git`.
-6) Create a folder `mkdir Build`.
-7) Enter the folder `cd Build`.
-8) Run CMake `cmake ..`.
-9) Open `LineOfSightAnalyzer.sln` with `Visual Studio 2022`.
-10) Build & Run with `Release` config.
+A high-performance line of sight (LOS) analysis tool using omnidirectional shadow mapping, built with C++, Qt 6, and OpenGL.
+This project avoids traditional ray casting, leveraging GPU-based techniques for real-time LOS visualization on terrain heightmaps.
 
-## Video
-https://github.com/user-attachments/assets/ff979701-34ea-4a09-b14c-b6a6bd0ede57
+## Getting Started
+
+### Prerequisites
+
+- **CMake** >= 3.25.1
+- **Visual Studio 2022** with MSVC v143
+- **Qt 6.7.3** (MSVC2022 64bit)
+
+### Build Instructions
+
+1. Install the prerequisites above.
+2. Set the environment variable `Qt6_DIR` to your Qt installation, e.g.:
+
+ ```
+ set Qt6_DIR=C:\Qt\6.7.3\msvc2022_64
+ ```
+
+3. Clone the repository:
+
+ ```
+ git clone https://github.com/berkbavas/LineOfSightAnalyzer.git
+ ```
+
+4. Create and enter a build directory:
+
+ ```
+ mkdir build
+ cd build
+ ```
+
+5. Run CMake:
+
+ ```
+ cmake ..
+ ```
+
+6. Open `LineOfSightAnalyzer.sln` in Visual Studio 2022.
+7. Build and run the project in **Release** mode.
+
+## Demo
+
+[Demo Video](https://github.com/user-attachments/assets/ff979701-34ea-4a09-b14c-b6a6bd0ede57)
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
