@@ -31,7 +31,6 @@ void LineOfSightAnalyzer::TerrainRenderer::Init()
     mTerrain = new Terrain(texture.width, texture.height, 16);
     mTerrain->SetTexture(texture);
     mTerrain->Construct();
-
 }
 
 void LineOfSightAnalyzer::TerrainRenderer::Render(float)
@@ -42,6 +41,13 @@ void LineOfSightAnalyzer::TerrainRenderer::Render(float)
     glViewport(0, 0, mWidth, mHeight);
     glClearColor(0, 0, 0, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // Enable wireframe mode if selected
+    if (mWireframeMode)
+    {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    }
+
     mTerrainShader->Bind();
     mTerrainShader->SetUniformValue("model", mTerrain->GetTransformation());
     mTerrainShader->SetUniformValue("view", mActiveCamera->GetViewMatrix());
@@ -51,10 +57,23 @@ void LineOfSightAnalyzer::TerrainRenderer::Render(float)
     mTerrainShader->SetUniformValue("observerPosition", mLineOfSightAnalyzer->GetObservers().at(0)->GetPosition());
     mTerrainShader->SetUniformValue("farPlane", mLineOfSightAnalyzer->GetObservers().at(0)->GetZFar());
     mTerrainShader->SetUniformValue("bias", mBias);
+
+    // Visualization uniforms
+    mTerrainShader->SetUniformValue("colorScheme", static_cast<int>(mColorScheme));
+    mTerrainShader->SetUniformValue("visibilityOpacity", mVisibilityOpacity);
+    mTerrainShader->SetUniformValue("showLOS", mShowLOS ? 1 : 0);
+    mTerrainShader->SetUniformValue("terrainColorMode", static_cast<int>(mTerrainColorMode));
+
     mTerrainShader->ActivateTexture(mTerrain->GetTexture());
     mTerrainShader->ActivateTexture(mLineOfSightAnalyzer->GetDepthMap());
     mTerrain->Render();
     mTerrainShader->Release();
+
+    // Restore fill mode
+    if (mWireframeMode)
+    {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    }
 
     QOpenGLFramebufferObject::bindDefault();
     glViewport(0, 0, mWidth, mHeight);
@@ -79,6 +98,36 @@ void LineOfSightAnalyzer::TerrainRenderer::DrawGui()
     ImGui::SliderFloat("Bias##RenderSettings", &mBias, 0.0f, 0.1f);
 
     ImGui::Spacing();
+    ImGui::Separator();
+    ImGui::TextColored(ImVec4(1, 1, 0, 1), "Visualization");
+
+    // LOS Toggle
+    ImGui::Checkbox("Show Line of Sight", &mShowLOS);
+
+    // Color Scheme dropdown
+    const char* colorSchemes[] = { "Green-Red", "Blue-Yellow", "Heat Map", "Purple-Cyan" };
+    int currentScheme = static_cast<int>(mColorScheme);
+    if (ImGui::Combo("LOS Color Scheme", &currentScheme, colorSchemes, IM_ARRAYSIZE(colorSchemes)))
+    {
+        mColorScheme = static_cast<ColorScheme>(currentScheme);
+    }
+
+    // Visibility Opacity
+    ImGui::SliderFloat("LOS Opacity", &mVisibilityOpacity, 0.0f, 1.0f);
+
+    // Terrain Color Mode
+    const char* terrainModes[] = { "Texture", "Height-Based", "Grayscale", "Heightmap" };
+    int currentTerrainMode = static_cast<int>(mTerrainColorMode);
+    if (ImGui::Combo("Terrain Color Mode", &currentTerrainMode, terrainModes, IM_ARRAYSIZE(terrainModes)))
+    {
+        mTerrainColorMode = static_cast<TerrainColorMode>(currentTerrainMode);
+    }
+
+    // Wireframe toggle
+    ImGui::Checkbox("Wireframe Mode", &mWireframeMode);
+
+    ImGui::Spacing();
+    ImGui::Separator();
     ImGui::TextColored(ImVec4(1, 1, 0, 1), "Info");
     ImGui::Text("Mouse World Position: (%.1f, %.1f, %.1f)", mMouseWorldPosition[0], mMouseWorldPosition[1], mMouseWorldPosition[2]);
     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
@@ -97,8 +146,14 @@ void LineOfSightAnalyzer::TerrainRenderer::onMouseMoved(QMouseEvent* event)
 {
     mFramebuffer->bind();
     glReadBuffer(GL_COLOR_ATTACHMENT1);
-    glReadPixels(event->pos().x() * mDevicePixelRatio, mFramebuffer->height() - event->pos().y() * mDevicePixelRatio, 1, 1, GL_RGB, GL_FLOAT, &mMouseWorldPosition);
+    QVector4D MouseWorldPosition;
+    glReadPixels(event->pos().x() * mDevicePixelRatio, mFramebuffer->height() - event->pos().y() * mDevicePixelRatio, 1, 1, GL_RGBA, GL_FLOAT, &MouseWorldPosition);
     mFramebuffer->release();
+
+    if (MouseWorldPosition.x() != 0.0f) // 
+    {
+        mMouseWorldPosition = QVector3D(MouseWorldPosition.x(), MouseWorldPosition.y(), MouseWorldPosition.z());
+    }       
 }
 
 void LineOfSightAnalyzer::TerrainRenderer::DeleteFramebuffer()

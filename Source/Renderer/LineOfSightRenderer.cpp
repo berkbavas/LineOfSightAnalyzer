@@ -106,8 +106,11 @@ void LineOfSightAnalyzer::LineOfSightRenderer::Render(float ifps)
 
 void LineOfSightAnalyzer::LineOfSightRenderer::DrawGui()
 {
+    ImGui::TextColored(ImVec4(1, 1, 0, 1), "Observer Settings");
+    ImGui::SliderFloat("Observer Height", &mObserverHeight, 1.0f, 500.0f);
     ImGui::SliderFloat("Min LOS Distance", &mMinLosDistance, 0.1f, 100.f);
     ImGui::SliderFloat("Max LOS Distance", &mMaxLosDistance, mMinLosDistance, 1000.0f);
+    ImGui::Checkbox("Lock Observer Position (L)", &mLockObserverPosition);
 }
 
 void LineOfSightAnalyzer::LineOfSightRenderer::SetTerrainRenderer(TerrainRenderer* terrainRenderer)

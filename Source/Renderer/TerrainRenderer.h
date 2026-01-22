@@ -6,16 +6,33 @@
 #include "Renderer/Shader.h"
 #include "Renderer/TextureLoader.h"
 
-#include <QOpenGLExtraFunctions>
 #include <QOpenGLFramebufferObject>
 #include <QOpenGLFramebufferObjectFormat>
+#include <QOpenGLFunctions_4_5_Core>
 
 namespace LineOfSightAnalyzer
 {
     class CameraManager;
     class LineOfSightRenderer;
 
-    class TerrainRenderer : protected QOpenGLExtraFunctions
+    // Visualization enums
+    enum class ColorScheme : int
+    {
+        GreenRed = 0,
+        BlueYellow = 1,
+        HeatMap = 2,
+        PurpleCyan = 3
+    };
+
+    enum class TerrainColorMode : int
+    {
+        Texture = 0,
+        HeightBased = 1,
+        Grayscale = 2,
+        HeightmapVis = 3
+    };
+
+    class TerrainRenderer : protected QOpenGLFunctions_4_5_Core
     {
         DISABLE_COPY(TerrainRenderer);
 
@@ -54,5 +71,12 @@ namespace LineOfSightAnalyzer
         DEFINE_MEMBER(float, DevicePixelRatio, 1.0f);
 
         float mBias{ 0.01f };
+
+        // Visualization settings
+        ColorScheme mColorScheme{ ColorScheme::GreenRed };
+        TerrainColorMode mTerrainColorMode{ TerrainColorMode::Texture };
+        float mVisibilityOpacity{ 0.3f };
+        bool mShowLOS{ true };
+        bool mWireframeMode{ false };
     };
 }
