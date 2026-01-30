@@ -111,6 +111,59 @@ void LineOfSightAnalyzer::LineOfSightRenderer::DrawGui()
     ImGui::SliderFloat("Min LOS Distance", &mMinLosDistance, 0.1f, 100.f);
     ImGui::SliderFloat("Max LOS Distance", &mMaxLosDistance, mMinLosDistance, 1000.0f);
     ImGui::Checkbox("Lock Observer Position (L)", &mLockObserverPosition);
+    
+    ImGui::Spacing();
+    ImGui::Separator();
+    ImGui::TextColored(ImVec4(1, 1, 0, 1), "Observer Mode");
+    
+    const char* observerModes[] = { "Full Sphere (360°)", "Hemisphere (Above Horizon)", "Directional Cone" };
+    int currentMode = static_cast<int>(mObserverMode);
+    if (ImGui::Combo("Mode", &currentMode, observerModes, IM_ARRAYSIZE(observerModes)))
+    {
+        mObserverMode = static_cast<ObserverMode>(currentMode);
+    }
+    
+    switch (mObserverMode)
+    {
+        case ObserverMode::Hemisphere:
+            ImGui::SliderFloat("Min Vertical Angle", &mVerticalAngleMin, -90.0f, 90.0f);
+            ImGui::SliderFloat("Max Vertical Angle", &mVerticalAngleMax, mVerticalAngleMin, 90.0f);
+            break;
+            
+        case ObserverMode::DirectionalCone:
+            ImGui::SliderFloat("Cone Half-Angle", &mConeAngle, 5.0f, 90.0f);
+            ImGui::SliderFloat("Direction (Yaw)", &mConeDirection, 0.0f, 360.0f);
+            ImGui::SliderFloat("Pitch", &mConePitch, -90.0f, 90.0f);
+            break;
+            
+        default:
+            break;
+    }
+    
+    ImGui::Spacing();
+    ImGui::Separator();
+    ImGui::TextColored(ImVec4(1, 1, 0, 1), "Analysis Statistics");
+    ImGui::Checkbox("Show Statistics", &mShowStatistics);
+    
+    if (mShowStatistics)
+    {
+        QVector3D pos = GetObserverPosition();
+        ImGui::Text("Observer Position: (%.1f, %.1f, %.1f)", pos.x(), pos.y(), pos.z());
+        
+        ImGui::Spacing();
+        ImGui::Text("Coverage Analysis:");
+        ImGui::BulletText("Visible Area: %.1f%%", mVisibleAreaPercentage);
+        ImGui::BulletText("Avg Visible Distance: %.1f", mAverageVisibleDistance);
+        
+        ImGui::Spacing();
+        ImGui::Text("Distance Band Coverage:");
+        
+        // Progress bars for distance bands
+        ImGui::ProgressBar(mDistanceBand1Percentage / 100.0f, ImVec2(-1, 0), "0-25%");
+        ImGui::ProgressBar(mDistanceBand2Percentage / 100.0f, ImVec2(-1, 0), "25-50%");
+        ImGui::ProgressBar(mDistanceBand3Percentage / 100.0f, ImVec2(-1, 0), "50-75%");
+        ImGui::ProgressBar(mDistanceBand4Percentage / 100.0f, ImVec2(-1, 0), "75-100%");
+    }
 }
 
 void LineOfSightAnalyzer::LineOfSightRenderer::SetTerrainRenderer(TerrainRenderer* terrainRenderer)

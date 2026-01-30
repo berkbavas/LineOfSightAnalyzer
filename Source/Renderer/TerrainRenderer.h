@@ -32,6 +32,15 @@ namespace LineOfSightAnalyzer
         HeightmapVis = 3
     };
 
+    // Terrain analysis modes
+    enum class TerrainAnalysisMode : int
+    {
+        None = 0,
+        Slope = 1,           // Visualize terrain steepness
+        Aspect = 2,          // Visualize terrain facing direction
+        Curvature = 3        // Visualize terrain curvature (convex/concave)
+    };
+
     class TerrainRenderer : protected QOpenGLFunctions_4_5_Core
     {
         DISABLE_COPY(TerrainRenderer);
@@ -78,5 +87,20 @@ namespace LineOfSightAnalyzer
         float mVisibilityOpacity{ 0.3f };
         bool mShowLOS{ true };
         bool mWireframeMode{ false };
+        
+        // Terrain analysis settings
+        TerrainAnalysisMode mTerrainAnalysisMode{ TerrainAnalysisMode::None };
+        float mSlopeThreshold{ 45.0f };  // Degrees - slopes above this are highlighted
+        
+        // Overlay settings
+        bool mShowContourLines{ false };
+        float mContourInterval{ 50.0f };  // Height interval between contour lines
+        float mContourLineWidth{ 1.0f };
+        
+        bool mShowDistanceRings{ false };
+        float mDistanceRingInterval{ 100.0f };  // Distance between rings
+        
+        bool mShowGrid{ false };
+        float mGridSize{ 100.0f };
     };
 }

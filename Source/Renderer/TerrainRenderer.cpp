@@ -63,6 +63,27 @@ void LineOfSightAnalyzer::TerrainRenderer::Render(float)
     mTerrainShader->SetUniformValue("visibilityOpacity", mVisibilityOpacity);
     mTerrainShader->SetUniformValue("showLOS", mShowLOS ? 1 : 0);
     mTerrainShader->SetUniformValue("terrainColorMode", static_cast<int>(mTerrainColorMode));
+    
+    // Terrain analysis uniforms
+    mTerrainShader->SetUniformValue("terrainAnalysisMode", static_cast<int>(mTerrainAnalysisMode));
+    mTerrainShader->SetUniformValue("slopeThreshold", mSlopeThreshold);
+    
+    // Observer mode uniforms
+    mTerrainShader->SetUniformValue("observerMode", static_cast<int>(mLineOfSightAnalyzer->GetObserverMode()));
+    mTerrainShader->SetUniformValue("coneAngle", mLineOfSightAnalyzer->GetConeAngle());
+    mTerrainShader->SetUniformValue("coneDirection", mLineOfSightAnalyzer->GetConeDirection());
+    mTerrainShader->SetUniformValue("conePitch", mLineOfSightAnalyzer->GetConePitch());
+    mTerrainShader->SetUniformValue("verticalAngleMin", mLineOfSightAnalyzer->GetVerticalAngleMin());
+    mTerrainShader->SetUniformValue("verticalAngleMax", mLineOfSightAnalyzer->GetVerticalAngleMax());
+    
+    // Overlay uniforms
+    mTerrainShader->SetUniformValue("showContourLines", mShowContourLines ? 1 : 0);
+    mTerrainShader->SetUniformValue("contourInterval", mContourInterval);
+    mTerrainShader->SetUniformValue("contourLineWidth", mContourLineWidth);
+    mTerrainShader->SetUniformValue("showDistanceRings", mShowDistanceRings ? 1 : 0);
+    mTerrainShader->SetUniformValue("distanceRingInterval", mDistanceRingInterval);
+    mTerrainShader->SetUniformValue("showGrid", mShowGrid ? 1 : 0);
+    mTerrainShader->SetUniformValue("gridSize", mGridSize);
 
     mTerrainShader->ActivateTexture(mTerrain->GetTexture());
     mTerrainShader->ActivateTexture(mLineOfSightAnalyzer->GetDepthMap());
@@ -125,6 +146,49 @@ void LineOfSightAnalyzer::TerrainRenderer::DrawGui()
 
     // Wireframe toggle
     ImGui::Checkbox("Wireframe Mode", &mWireframeMode);
+
+    ImGui::Spacing();
+    ImGui::Separator();
+    ImGui::TextColored(ImVec4(1, 1, 0, 1), "Terrain Analysis");
+    
+    // Terrain Analysis Mode
+    const char* analysisModes[] = { "None", "Slope", "Aspect (Direction)", "Curvature" };
+    int currentAnalysisMode = static_cast<int>(mTerrainAnalysisMode);
+    if (ImGui::Combo("Analysis Mode", &currentAnalysisMode, analysisModes, IM_ARRAYSIZE(analysisModes)))
+    {
+        mTerrainAnalysisMode = static_cast<TerrainAnalysisMode>(currentAnalysisMode);
+    }
+    
+    if (mTerrainAnalysisMode == TerrainAnalysisMode::Slope)
+    {
+        ImGui::SliderFloat("Slope Threshold (deg)", &mSlopeThreshold, 10.0f, 80.0f);
+    }
+
+    ImGui::Spacing();
+    ImGui::Separator();
+    ImGui::TextColored(ImVec4(1, 1, 0, 1), "Overlays");
+    
+    // Contour lines
+    ImGui::Checkbox("Show Contour Lines", &mShowContourLines);
+    if (mShowContourLines)
+    {
+        ImGui::SliderFloat("Contour Interval", &mContourInterval, 10.0f, 200.0f);
+        ImGui::SliderFloat("Contour Width", &mContourLineWidth, 0.5f, 5.0f);
+    }
+    
+    // Distance rings
+    ImGui::Checkbox("Show Distance Rings", &mShowDistanceRings);
+    if (mShowDistanceRings)
+    {
+        ImGui::SliderFloat("Ring Interval", &mDistanceRingInterval, 50.0f, 500.0f);
+    }
+    
+    // Grid
+    ImGui::Checkbox("Show Grid", &mShowGrid);
+    if (mShowGrid)
+    {
+        ImGui::SliderFloat("Grid Size", &mGridSize, 25.0f, 250.0f);
+    }
 
     ImGui::Spacing();
     ImGui::Separator();
