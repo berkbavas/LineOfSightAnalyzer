@@ -36,8 +36,8 @@ namespace LineOfSightAnalyzer
       protected:
         int mWidth{ 1 };
         int mHeight{ 1 };
-        float mZNear{ 0.1f };      // Near clipping plane distance
-        float mZFar{ 100'000.0f }; // Far clipping plane distance
+        float mZNear{ 0.1f };     // Near clipping plane distance
+        float mZFar{ 10'000.0f }; // Far clipping plane distance
     };
 
     using CameraPtr = std::unique_ptr<Camera>;
