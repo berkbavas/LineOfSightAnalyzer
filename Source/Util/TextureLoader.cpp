@@ -13,10 +13,6 @@ LineOfSightAnalyzer::Texture LineOfSightAnalyzer::TextureLoader::LoadTexture2D(c
 {
     LOG_DEBUG("TextureLoader::LoadTexture2D: Loading texture at {}", Path.toStdString());
 
-    GLuint TextureId;
-    glGenTextures(1, &TextureId);
-    glBindTexture(GL_TEXTURE_2D, TextureId);
-
     QImage Image = QImage(Path);
 
     if (Image.isNull())
@@ -25,6 +21,10 @@ LineOfSightAnalyzer::Texture LineOfSightAnalyzer::TextureLoader::LoadTexture2D(c
     }
 
     Image = Image.convertToFormat(QImage::Format_RGBA8888);
+
+    GLuint TextureId;
+    glGenTextures(1, &TextureId);
+    glBindTexture(GL_TEXTURE_2D, TextureId);
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Image.width(), Image.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, Image.bits());
     glGenerateMipmap(GL_TEXTURE_2D);

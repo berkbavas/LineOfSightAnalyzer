@@ -30,6 +30,7 @@ namespace LineOfSightAnalyzer
         Framebuffer* GetFramebuffer() const;
         Terrain* GetTerrain() const;
         const QVector3D& GetMouseWorldPosition() const;
+        void BlitToDefaultFramebuffer(int Width, int Height, float DevicePixelRatio);
 
       private:
         LineOfSightRenderer* mLineOfSightAnalyzer{ nullptr };

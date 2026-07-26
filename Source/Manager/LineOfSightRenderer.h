@@ -38,6 +38,9 @@ namespace LineOfSightAnalyzer
         float GetVerticalAngleMax() const { return mVerticalAngleMax; }
 
       private:
+        void CreateObservers();
+        GLuint CreateLineOfSightFramebuffer(int Width, int Height);
+
         ShaderPtr mObserverShader;
 
         TerrainRenderer* mTerrainRenderer;
@@ -61,6 +64,8 @@ namespace LineOfSightAnalyzer
         DEFINE_MEMBER(bool, LockObserverPosition, false);
         DEFINE_MEMBER_CONST(std::vector<FreeCameraPtr>, Observers);
         DEFINE_MEMBER_CONST(Texture, DepthMap);
+
+        static constexpr int NUMBER_OF_OBSERVERS{ 6 }; // Number of observers for full sphere coverage (6 for cube map)
     };
 
     using LineOfSightRendererPtr = std::unique_ptr<LineOfSightRenderer>;

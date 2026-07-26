@@ -12,11 +12,11 @@ namespace LineOfSightAnalyzer
 
         void Update(float Ifps) override;
         void Reset() override;
-        bool OnKeyPressed(QKeyEvent *) override;
-        bool OnKeyReleased(QKeyEvent *) override;
-        bool OnMousePressed(QMouseEvent *) override;
-        bool OnMouseReleased(QMouseEvent *) override;
-        bool OnMouseMoved(QMouseEvent *) override;
+        bool OnKeyPressed(QKeyEvent *pEvent) override;
+        bool OnKeyReleased(QKeyEvent *pEvent) override;
+        bool OnMousePressed(QMouseEvent *pEvent) override;
+        bool OnMouseReleased(QMouseEvent *pEvent) override;
+        bool OnMouseMoved(QMouseEvent *pEvent) override;
 
       private:
         bool IsKeyPressed(Qt::Key Key) const;

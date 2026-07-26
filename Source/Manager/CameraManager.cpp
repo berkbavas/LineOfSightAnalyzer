@@ -87,7 +87,7 @@ void LineOfSightAnalyzer::CameraManager::DrawGui()
         ImGui::Text("1   : Free Camera");
         ImGui::Text("2   : Orthographic Camera");
         ImGui::Text(">>> : Shift");
-        ImGui::Text("|   : Ctrl");
+        ImGui::Text("<<< : Ctrl");
         ImGui::Text("L   : Lock Observer");
     }
 }

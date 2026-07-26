@@ -221,3 +221,19 @@ const QVector3D& LineOfSightAnalyzer::TerrainRenderer::GetMouseWorldPosition() c
 {
     return mMouseWorldPosition;
 }
+
+void LineOfSightAnalyzer::TerrainRenderer::BlitToDefaultFramebuffer(int Width, int Height, float DevicePixelRatio)
+{
+    QOpenGLFramebufferObject::bindDefault();
+    glViewport(0, 0, Width * DevicePixelRatio, Height * DevicePixelRatio);
+    glClearColor(0, 0, 0, 1);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    QOpenGLFramebufferObject::blitFramebuffer(nullptr, // Blit to the default framebuffer
+                                              QRect(0, 0, Width * DevicePixelRatio, Height * DevicePixelRatio),
+                                              mFramebuffer->GetFramebufferObject(),
+                                              mFramebuffer->GetViewport(),
+                                              GL_COLOR_BUFFER_BIT,
+                                              GL_NEAREST,
+                                              0,
+                                              0);
+}

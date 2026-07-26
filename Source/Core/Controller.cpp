@@ -67,22 +67,10 @@ void LineOfSightAnalyzer::Controller::Render(float Ifps)
     mCameraManager->Update(Ifps);
     mLineOfSightRenderer->Render(Ifps);
     mTerrainRenderer->Render(pActiveCamera, DevicePixelRatio, Ifps);
+    mTerrainRenderer->BlitToDefaultFramebuffer(Width, Height, DevicePixelRatio);
 
-    // Render the final output to the default framebuffer
     QOpenGLFramebufferObject::bindDefault();
-    glDisable(GL_DEPTH_TEST);
     glViewport(0, 0, Width * DevicePixelRatio, Height * DevicePixelRatio);
-    glClearColor(0, 0, 0, 1);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-    QOpenGLFramebufferObject::blitFramebuffer(nullptr, // Blit to the default framebuffer
-                                              QRect(0, 0, Width * DevicePixelRatio, Height * DevicePixelRatio),
-                                              mTerrainRenderer->GetFramebuffer()->GetFramebufferObject(),
-                                              mTerrainRenderer->GetFramebuffer()->GetViewport(),
-                                              GL_COLOR_BUFFER_BIT,
-                                              GL_NEAREST,
-                                              0,
-                                              0);
-
     QtImGui::newFrame(mRenderRef);
 
     ImGui::Begin("Settings");

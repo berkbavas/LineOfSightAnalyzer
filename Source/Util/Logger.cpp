@@ -68,6 +68,29 @@ void LineOfSightAnalyzer::Logger::QtMessageOutputCallback(QtMsgType Type, const 
     }
 }
 
+std::string LineOfSightAnalyzer::Logger::GetLogLevelString(LogLevel LogLevel)
+{
+    switch (LogLevel)
+    {
+    case LogLevel::ALL:
+        return "ALL";
+    case LogLevel::NONE:
+        return "NONE";
+    case LogLevel::TRACE:
+        return "TRACE";
+    case LogLevel::DEBUG:
+        return "DEBUG";
+    case LogLevel::INFO:
+        return "INFO";
+    case LogLevel::WARNING:
+        return "WARN";
+    case LogLevel::FATAL:
+        return "FATAL";
+    default:
+        return "N/A";
+    }
+}
+
 bool LineOfSightAnalyzer::Logger::IsLogEnabledFor(LogLevel LogLevel)
 {
     return mLogLevel <= LogLevel;
