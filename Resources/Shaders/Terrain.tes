@@ -1,0 +1,52 @@
+#version 450 core
+
+layout(quads, fractional_odd_spacing, ccw) in;
+
+uniform sampler2D uHeightMap;
+uniform mat4 uModelMatrix;
+uniform mat4 uViewMatrix;
+uniform mat4 uProjectionMatrix;
+uniform float uMinimumElevation;
+uniform float uMaximumElevation;
+
+in vec2 tesTextureCoords[];
+
+out vec2 fsTextureCoords;
+out vec3 fsFragWorldPosition;
+out vec3 gsFragWorldPosition;
+
+void main()
+{
+    const float U = gl_TessCoord.x;
+    const float V = gl_TessCoord.y;
+
+    const vec2 T00 = tesTextureCoords[0];
+    const vec2 T01 = tesTextureCoords[1];
+    const vec2 T10 = tesTextureCoords[2];
+    const vec2 T11 = tesTextureCoords[3];
+
+    const vec2 T0 = (T01 - T00) * U + T00;
+    const vec2 T1 = (T11 - T10) * U + T10;
+    const vec2 TexCoord = (T1 - T0) * V + T0;
+
+    const float Height = uMinimumElevation + (uMaximumElevation - uMinimumElevation) * texture(uHeightMap, TexCoord).y;
+
+    const vec4 P00 = gl_in[0].gl_Position;
+    const vec4 P01 = gl_in[1].gl_Position;
+    const vec4 P10 = gl_in[2].gl_Position;
+    const vec4 P11 = gl_in[3].gl_Position;
+
+    const vec4 P0 = (P01 - P00) * U + P00;
+    const vec4 P1 = (P11 - P10) * U + P10;
+    vec4 Position = (P1 - P0) * V + P0;
+
+    Position += vec4(0, Height, 0, 1.0f);
+
+    fsFragWorldPosition = Position.xyz;
+
+    gsFragWorldPosition = Position.xyz;    
+
+    fsTextureCoords = TexCoord;
+    
+    gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * Position;
+}

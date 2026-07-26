@@ -1,0 +1,42 @@
+#pragma once
+
+#include "Util/Macros.h"
+
+#include <QMatrix3x3>
+#include <QMatrix4x4>
+#include <QQuaternion>
+#include <QVector3D>
+
+namespace LineOfSightAnalyzer
+{
+    class Node
+    {
+      public:
+        Node() = default;
+        virtual ~Node() = default;
+
+        const QMatrix4x4& GetTransformation() const;
+        const QQuaternion& GetRotation() const;
+        const QVector3D& GetPosition() const;
+        const QVector3D& GetScale() const;
+        const QMatrix3x3& GetNormalMatrix() const;
+
+        void SetTransformation(const QMatrix4x4& NewTransformation);
+        void SetRotation(const QQuaternion& NewRotation);
+        void SetPosition(const QVector3D& NewPosition);
+        void SetPosition(float X, float Y, float Z);
+        void SetScale(const QVector3D& NewScale);
+        void SetScale(float X, float Y, float Z);
+        void SetScale(float UniformScale);
+        void Translate(const QVector3D& Delta);
+
+      private:
+        void UpdateTransformation();
+
+        QMatrix4x4 mTransformation;
+        QMatrix3x3 mNormalMatrix;
+        QQuaternion mRotation;
+        QVector3D mPosition{ QVector3D(0, 0, 0) };
+        QVector3D mScale{ QVector3D(1, 1, 1) };
+    };
+}
