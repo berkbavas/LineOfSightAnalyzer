@@ -84,10 +84,10 @@ void LineOfSightAnalyzer::LineOfSightRenderer::DrawGui()
         ImGui::TextColored(ImVec4(1, 1, 0, 1), "Observer Mode");
 
         const char* ObserverModes[] = { "Full Sphere (360°)", "Hemisphere (Above Horizon)", "Directional Cone" };
-        int currentMode = static_cast<int>(mObserverMode);
-        if (ImGui::Combo("Mode", &currentMode, ObserverModes, IM_ARRAYSIZE(ObserverModes)))
+        int CurrentMode = static_cast<int>(mObserverMode);
+        if (ImGui::Combo("Mode", &CurrentMode, ObserverModes, IM_ARRAYSIZE(ObserverModes)))
         {
-            mObserverMode = static_cast<ObserverMode>(currentMode);
+            mObserverMode = static_cast<ObserverMode>(CurrentMode);
         }
 
         switch (mObserverMode)

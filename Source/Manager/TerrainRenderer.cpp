@@ -115,10 +115,10 @@ void LineOfSightAnalyzer::TerrainRenderer::DrawGui()
 
         // Color Scheme dropdown
         const char* ColorSchemes[] = { "Green-Red", "Blue-Yellow", "Heat Map", "Purple-Cyan" };
-        int currentScheme = static_cast<int>(mColorScheme);
-        if (ImGui::Combo("LOS Color Scheme", &currentScheme, ColorSchemes, IM_ARRAYSIZE(ColorSchemes)))
+        int CurrentScheme = static_cast<int>(mColorScheme);
+        if (ImGui::Combo("LOS Color Scheme", &CurrentScheme, ColorSchemes, IM_ARRAYSIZE(ColorSchemes)))
         {
-            mColorScheme = static_cast<ColorScheme>(currentScheme);
+            mColorScheme = static_cast<ColorScheme>(CurrentScheme);
         }
 
         // Visibility Opacity
@@ -126,10 +126,10 @@ void LineOfSightAnalyzer::TerrainRenderer::DrawGui()
 
         // Terrain Color Mode
         const char* TerrainModes[] = { "Texture", "Height-Based", "Grayscale", "Heightmap" };
-        int currentTerrainMode = static_cast<int>(mTerrainColorMode);
-        if (ImGui::Combo("Terrain Color Mode", &currentTerrainMode, TerrainModes, IM_ARRAYSIZE(TerrainModes)))
+        int CurrentTerrainMode = static_cast<int>(mTerrainColorMode);
+        if (ImGui::Combo("Terrain Color Mode", &CurrentTerrainMode, TerrainModes, IM_ARRAYSIZE(TerrainModes)))
         {
-            mTerrainColorMode = static_cast<TerrainColorMode>(currentTerrainMode);
+            mTerrainColorMode = static_cast<TerrainColorMode>(CurrentTerrainMode);
         }
 
         // Wireframe toggle
@@ -141,10 +141,10 @@ void LineOfSightAnalyzer::TerrainRenderer::DrawGui()
 
         // Terrain Analysis Mode
         const char* AnalysisModes[] = { "None", "Slope", "Aspect (Direction)", "Curvature" };
-        int currentAnalysisMode = static_cast<int>(mTerrainAnalysisMode);
-        if (ImGui::Combo("Analysis Mode", &currentAnalysisMode, AnalysisModes, IM_ARRAYSIZE(AnalysisModes)))
+        int CurrentAnalysisMode = static_cast<int>(mTerrainAnalysisMode);
+        if (ImGui::Combo("Analysis Mode", &CurrentAnalysisMode, AnalysisModes, IM_ARRAYSIZE(AnalysisModes)))
         {
-            mTerrainAnalysisMode = static_cast<TerrainAnalysisMode>(currentAnalysisMode);
+            mTerrainAnalysisMode = static_cast<TerrainAnalysisMode>(CurrentAnalysisMode);
         }
 
         if (mTerrainAnalysisMode == TerrainAnalysisMode::Slope)
