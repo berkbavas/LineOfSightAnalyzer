@@ -41,7 +41,6 @@ void LineOfSightAnalyzer::Controller::Initialize()
     mTerrainRenderer = std::make_unique<TerrainRenderer>();
 
     mTerrainRenderer->SetLineOfSightRenderer(mLineOfSightRenderer.get());
-    mLineOfSightRenderer->SetTerrainRenderer(mTerrainRenderer.get());
     mLineOfSightRenderer->SetTerrain(mTerrainRenderer->GetTerrain());
 
     mRenderRef = QtImGui::initialize(mWindow.get(), true);

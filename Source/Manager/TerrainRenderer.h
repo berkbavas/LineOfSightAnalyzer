@@ -26,6 +26,7 @@ namespace LineOfSightAnalyzer
         void DrawGui();
         void Resize(int Width, int Height);
         bool OnMouseMoved(QMouseEvent* pEvent) override;
+        bool OnKeyPressed(QKeyEvent* pEvent) override;
         void SetLineOfSightRenderer(LineOfSightRenderer* pLineOfSightAnalyzer);
         Framebuffer* GetFramebuffer() const;
         Terrain* GetTerrain() const;
@@ -67,6 +68,8 @@ namespace LineOfSightAnalyzer
 
         bool mShowGrid{ false };
         float mGridSize{ 100.0f };
+
+        bool mLockObserverPosition{ false }; // If true, the observer position is locked and cannot be moved
     };
 
     using TerrainRendererPtr = std::unique_ptr<TerrainRenderer>;

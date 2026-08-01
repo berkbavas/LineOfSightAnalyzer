@@ -8,7 +8,7 @@ namespace LineOfSightAnalyzer
     {
       public:
         PerspectiveCamera() = default;
-
+        
         QMatrix4x4 GetProjectionMatrix() const override;
         float GetHorizontalFov() const;
         float GetAspectRatio() const;

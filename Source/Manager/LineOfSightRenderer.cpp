@@ -22,35 +22,21 @@ LineOfSightAnalyzer::LineOfSightRenderer::LineOfSightRenderer()
 
     CreateObservers();
 
-    mDepthMap.Id = CreateLineOfSightFramebuffer(OBSERVER_FBO_WIDTH, OBSERVER_FBO_HEIGHT);
-    mDepthMap.Width = OBSERVER_FBO_WIDTH;
-    mDepthMap.Height = OBSERVER_FBO_HEIGHT;
-    mDepthMap.Target = GL_TEXTURE_CUBE_MAP;
-    mDepthMap.Name = "uDepthMap";
-    mDepthMap.Unit = 1;
+    mObserverFramebuffer = std::make_unique<CubicFramebuffer>(mFramebufferWidth, mFramebufferHeight);
 }
 
 void LineOfSightAnalyzer::LineOfSightRenderer::Render(float Ifps)
 {
-    // Update observers' position
-    for (int i = 0; i < mObservers.size(); i++)
-    {
-        if (!mLockObserverPosition)
-        {
-            mObservers.at(i)->SetPosition(mTerrainRenderer->GetMouseWorldPosition() + QVector3D(0, mObserverHeight, 0));
-        }
+    UpdateObservers();
 
-        mObservers.at(i)->SetZNear(mMinLosDistance);
-        mObservers.at(i)->SetZFar(mMaxLosDistance);
-    }
-
-    // Line of sight render
-    glBindFramebuffer(GL_FRAMEBUFFER, mFramebuffer);
     glEnable(GL_DEPTH_TEST);
-    glViewport(0, 0, OBSERVER_FBO_WIDTH, OBSERVER_FBO_HEIGHT);
-    glClearColor(0, 0, 0, 1);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-    
+    glDepthMask(GL_TRUE);
+
+    mObserverFramebuffer->Clear();
+    mObserverFramebuffer->Bind();
+
+    glViewport(0, 0, mObserverFramebuffer->GetWidth(), mObserverFramebuffer->GetHeight());
+
     mObserverShader->Bind();
 
     for (int i = 0; i < mObservers.size(); i++)
@@ -60,9 +46,9 @@ void LineOfSightAnalyzer::LineOfSightRenderer::Render(float Ifps)
 
     mObserverShader->SetUniform("uMinimumElevation", mTerrain->GetMinElevation());
     mObserverShader->SetUniform("uMaximumElevation", mTerrain->GetMaxElevation());
-    mObserverShader->SetUniform("uObserverPosition", mObservers.at(0)->GetPosition());
-    mObserverShader->SetUniform("uFarPlane", mObservers.at(0)->GetZFar());
-    mObserverShader->SetSampler(mTerrain->GetTexture().Name, mTerrain->GetTexture().Unit, mTerrain->GetTexture().Id, mTerrain->GetTexture().Target);
+    mObserverShader->SetUniform("uObserverPosition", GetObserverPosition());
+    mObserverShader->SetUniform("uFarPlane", mMaxLosDistance);
+    mObserverShader->SetSampler("uHeightMap", 0, mTerrain->GetTexture().Id, GL_TEXTURE_2D);
     mTerrain->Render();
     mObserverShader->Unbind();
 
@@ -74,10 +60,9 @@ void LineOfSightAnalyzer::LineOfSightRenderer::DrawGui()
     if (ImGui::CollapsingHeader("Line Of Sight Settings"))
     {
         ImGui::TextColored(ImVec4(1, 1, 0, 1), "Observer Settings");
-        ImGui::SliderFloat("Observer Height", &mObserverHeight, 1.0f, 500.0f);
-        ImGui::SliderFloat("Min LOS Distance", &mMinLosDistance, 0.1f, 100.f);
+        ImGui::SliderFloat("Observer Height", &mObserverHeight, 0.0f, 250.0f);
+        ImGui::SliderFloat("Min LOS Distance", &mMinLosDistance, 0.0f, 100.f);
         ImGui::SliderFloat("Max LOS Distance", &mMaxLosDistance, mMinLosDistance, 1000.0f);
-        ImGui::Checkbox("Lock Observer Position (L)", &mLockObserverPosition);
 
         ImGui::Spacing();
         ImGui::Separator();
@@ -109,25 +94,9 @@ void LineOfSightAnalyzer::LineOfSightRenderer::DrawGui()
     }
 }
 
-void LineOfSightAnalyzer::LineOfSightRenderer::SetTerrainRenderer(TerrainRenderer* pTerrainRenderer)
-{
-    mTerrainRenderer = pTerrainRenderer;
-}
-
 void LineOfSightAnalyzer::LineOfSightRenderer::SetTerrain(Terrain* pTerrain)
 {
     mTerrain = pTerrain;
-}
-
-bool LineOfSightAnalyzer::LineOfSightRenderer::OnKeyPressed(QKeyEvent* pEvent)
-{
-    if (pEvent->key() == Qt::Key_L)
-    {
-        mLockObserverPosition = !mLockObserverPosition;
-        return true;
-    }
-
-    return false;
 }
 
 QVector3D LineOfSightAnalyzer::LineOfSightRenderer::GetObserverPosition() const
@@ -135,17 +104,28 @@ QVector3D LineOfSightAnalyzer::LineOfSightRenderer::GetObserverPosition() const
     return mObservers.at(0)->GetPosition();
 }
 
+GLuint LineOfSightAnalyzer::LineOfSightRenderer::GetDepthMap() const
+{
+    return mObserverFramebuffer->GetDepthMap();
+}
+
+void LineOfSightAnalyzer::LineOfSightRenderer::SetObserverPositionOnTerrain(const QVector3D& Position)
+{
+    mObserverPositionOnTerrain = Position;
+}
+
 void LineOfSightAnalyzer::LineOfSightRenderer::CreateObservers()
 {
-    for (int i = 0; i < NUMBER_OF_OBSERVERS; i++)
+    for (int i = 0; i < 6; i++)
     {
-        mObservers.push_back(std::make_unique<FreeCamera>());
-        mObservers.at(i)->SetPosition(QVector3D(0, 100, 0));
-        mObservers.at(i)->Resize(OBSERVER_FBO_WIDTH, OBSERVER_FBO_HEIGHT);
+        mObservers.push_back(std::make_unique<DummyCamera>());
+        mObservers.at(i)->Resize(mFramebufferWidth, mFramebufferHeight);
         mObservers.at(i)->SetVerticalFov(90.0f);
         mObservers.at(i)->SetZNear(mMinLosDistance);
         mObservers.at(i)->SetZFar(mMaxLosDistance);
     }
+
+    // Why do we need to apply a roll fix?
     const auto RollFix = QQuaternion::fromAxisAndAngle(QVector3D(0, 0, 1), 180);
 
     mObservers.at(0)->SetRotation(QQuaternion::fromAxisAndAngle(QVector3D(0, 1, 0), -90) * RollFix);
@@ -156,37 +136,12 @@ void LineOfSightAnalyzer::LineOfSightRenderer::CreateObservers()
     mObservers.at(5)->SetRotation(RollFix);
 }
 
-GLuint LineOfSightAnalyzer::LineOfSightRenderer::CreateLineOfSightFramebuffer(int Width, int Height)
+void LineOfSightAnalyzer::LineOfSightRenderer::UpdateObservers()
 {
-    GLuint TextureId;
-
-    glGenFramebuffers(1, &mFramebuffer);
-    glGenTextures(1, &TextureId);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, TextureId);
-
-    for (unsigned int i = 0; i < 6; ++i)
+    for (const auto& pObserver : mObservers)
     {
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, //
-                     0,
-                     GL_DEPTH_COMPONENT,
-                     Width,
-                     Height,
-                     0,
-                     GL_DEPTH_COMPONENT,
-                     GL_FLOAT,
-                     NULL);
+        pObserver->SetPosition(mObserverPositionOnTerrain + QVector3D(0, mObserverHeight, 0));
+        pObserver->SetZNear(mMinLosDistance);
+        pObserver->SetZFar(mMaxLosDistance);
     }
-
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-    glBindFramebuffer(GL_FRAMEBUFFER, mFramebuffer);
-    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, TextureId, 0);
-    glDrawBuffer(GL_NONE);
-    glReadBuffer(GL_NONE);
-
-    return TextureId;
 }

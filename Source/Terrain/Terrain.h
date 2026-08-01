@@ -9,6 +9,8 @@
 
 namespace LineOfSightAnalyzer
 {
+    class Shader;
+
     class Terrain : protected QOpenGLFunctions_4_5_Core
     {
       public:

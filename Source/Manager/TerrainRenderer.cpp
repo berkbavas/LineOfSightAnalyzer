@@ -26,19 +26,18 @@ LineOfSightAnalyzer::TerrainRenderer::TerrainRenderer()
 
     mTextureLoader = std::make_unique<TextureLoader>();
 
-    Texture Texture = mTextureLoader->LoadTexture2D("Resources/HeightMaps/01.png");
-    Texture.Name = "uHeightMap";
-    Texture.Unit = 0;
-
-    mTerrain = std::make_unique<Terrain>(Texture);
+    const auto& HeightMap = mTextureLoader->LoadTexture2D("Resources/HeightMaps/01.png");
+    mTerrain = std::make_unique<Terrain>(HeightMap);
 
     mFramebuffer = std::make_unique<Framebuffer>(1, 1, mFramebufferFormat, mExtraColorAttachments);
 }
 
 void LineOfSightAnalyzer::TerrainRenderer::Render(Camera* pActiveCamera, float DevicePixelRatio, float Ifps)
 {
-    mFramebuffer->Bind();
     glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_TRUE);
+
+    mFramebuffer->Bind();
     glViewport(0, 0, mFramebuffer->GetWidth(), mFramebuffer->GetHeight());
     glClearColor(0, 0, 0, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -59,8 +58,8 @@ void LineOfSightAnalyzer::TerrainRenderer::Render(Camera* pActiveCamera, float D
     mTerrainShader->SetUniform("uProjectionMatrix", pActiveCamera->GetProjectionMatrix());
     mTerrainShader->SetUniform("uMinimumElevation", mTerrain->GetMinElevation());
     mTerrainShader->SetUniform("uMaximumElevation", mTerrain->GetMaxElevation());
-    mTerrainShader->SetUniform("uObserverPosition", mLineOfSightAnalyzer->GetObservers().at(0)->GetPosition());
-    mTerrainShader->SetUniform("uFarPlane", mLineOfSightAnalyzer->GetObservers().at(0)->GetZFar());
+    mTerrainShader->SetUniform("uObserverPosition", mLineOfSightAnalyzer->GetObserverPosition());
+    mTerrainShader->SetUniform("uFarPlane", mLineOfSightAnalyzer->GetMaxLosDistance());
     mTerrainShader->SetUniform("uBias", mBias);
     mTerrainShader->SetUniform("uColorScheme", static_cast<int>(mColorScheme));
     mTerrainShader->SetUniform("uVisibilityOpacity", mVisibilityOpacity);
@@ -81,11 +80,8 @@ void LineOfSightAnalyzer::TerrainRenderer::Render(Camera* pActiveCamera, float D
     mTerrainShader->SetUniform("uDistanceRingInterval", mDistanceRingInterval);
     mTerrainShader->SetUniform("uShowGrid", mShowGrid ? 1 : 0);
     mTerrainShader->SetUniform("uGridSize", mGridSize);
-
-    const auto& TerrainTexture = mTerrain->GetTexture();
-    const auto& DepthMapTexture = mLineOfSightAnalyzer->GetDepthMap();
-    mTerrainShader->SetSampler(TerrainTexture.Name, TerrainTexture.Unit, TerrainTexture.Id, TerrainTexture.Target);
-    mTerrainShader->SetSampler(DepthMapTexture.Name, DepthMapTexture.Unit, DepthMapTexture.Id, DepthMapTexture.Target);
+    mTerrainShader->SetSampler("uHeightMap", 0, mTerrain->GetTexture().Id, GL_TEXTURE_2D);
+    mTerrainShader->SetSampler("uDepthMap", 1, mLineOfSightAnalyzer->GetDepthMap(), GL_TEXTURE_CUBE_MAP);
     mTerrain->Render();
     mTerrainShader->Unbind();
     mFramebuffer->Release();
@@ -105,6 +101,7 @@ void LineOfSightAnalyzer::TerrainRenderer::DrawGui()
         ImGui::SliderFloat("Min Elevation##RenderSettings", &mTerrain->GetMinElevation_NonConst(), 0, 100);
         ImGui::SliderFloat("Max Elevation##RenderSettings", &mTerrain->GetMaxElevation_NonConst(), mTerrain->GetMinElevation(), 1000);
         ImGui::SliderFloat("Bias##RenderSettings", &mBias, 0.0f, 0.1f);
+        ImGui::Checkbox("Lock Observer Position (L)", &mLockObserverPosition);
 
         ImGui::Spacing();
         ImGui::Separator();
@@ -196,6 +193,23 @@ bool LineOfSightAnalyzer::TerrainRenderer::OnMouseMoved(QMouseEvent* pEvent)
     if (MouseWorldPosition.x() != 0.0f)
     {
         mMouseWorldPosition = QVector3D(MouseWorldPosition.x(), MouseWorldPosition.y(), MouseWorldPosition.z());
+
+        if (!mLockObserverPosition)
+        {
+            mLineOfSightAnalyzer->SetObserverPositionOnTerrain(mMouseWorldPosition);
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
+bool LineOfSightAnalyzer::TerrainRenderer::OnKeyPressed(QKeyEvent* pEvent)
+{
+    if (pEvent->key() == Qt::Key_L)
+    {
+        mLockObserverPosition = !mLockObserverPosition;
         return true;
     }
 

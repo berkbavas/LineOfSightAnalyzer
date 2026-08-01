@@ -81,6 +81,7 @@ LineOfSightAnalyzer::Terrain::~Terrain()
 
 void LineOfSightAnalyzer::Terrain::Render()
 {
+
     glBindVertexArray(mVAO);
     glDrawArrays(GL_PATCHES, 0, 4 * mDensity * mDensity);
     glBindVertexArray(0);

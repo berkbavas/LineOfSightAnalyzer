@@ -22,7 +22,4 @@ namespace LineOfSightAnalyzer
     inline constexpr QVector3D RIGHT(1, 0, 0);
     inline constexpr QVector3D FORWARD(0, 0, -1);
     inline constexpr QVector3D BACKWARD(0, 0, 1);
-
-    inline constexpr int OBSERVER_FBO_WIDTH{ 4096 };
-    inline constexpr int OBSERVER_FBO_HEIGHT{ 4096 };
 }

@@ -37,7 +37,6 @@ LineOfSightAnalyzer::Texture LineOfSightAnalyzer::TextureLoader::LoadTexture2D(c
 
     Texture Texture;
     Texture.Id = TextureId;
-    Texture.Target = GL_TEXTURE_2D;
     Texture.Width = Image.width();
     Texture.Height = Image.height();
 

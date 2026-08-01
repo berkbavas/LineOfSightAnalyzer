@@ -326,7 +326,7 @@ void main()
     if (uShowLos)
     {
         vec3 FragmentToObserver = fsFragWorldPosition - uObserverPosition;
-        float ClosestDepth = texture(uDepthMap, FragmentToObserver).r * uFarPlane;
+        float ClosestDepth = texture(uDepthMap, normalize(FragmentToObserver)).r * uFarPlane;
         float CurrentDepth = length(FragmentToObserver);
 
         if (CurrentDepth - uBias * uFarPlane < ClosestDepth)
